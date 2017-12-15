@@ -1,0 +1,22 @@
+version: 2
+jobs:
+ fastlane-build-deploy:
+   machine: true
+   steps:
+     - checkout
+     - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
+     - run: docker build -t levibostian/fastlane:latest fastlane
+     - run: docker push levibostian/fastlane:latest
+
+workflows:
+  version: 2
+  fastlane-build-deploy:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *" # runs everyday at midnight UTC.
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - fastlane-build-deploy
