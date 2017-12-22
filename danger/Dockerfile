@@ -11,4 +11,4 @@ RUN danger --version
 VOLUME ${WORK_DIR}
 WORKDIR ${WORK_DIR}
 
-ENTRYPOINT ["danger"]
+ENTRYPOINT ["danger", "--fail-on-errors=true"]
