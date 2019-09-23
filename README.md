@@ -15,3 +15,7 @@ Image designed for running Nodejs applications inside of them for local developm
 ### fastlane 
 
 Docker image that has Fastlane installed as well as a few other utilities. Used primarily with CircleCi to run Fastlane builds for deploying apps
+
+### aws-cli
+
+Just like [this](https://hub.docker.com/r/jdrago999/aws-cli/), but always using the latest AWS CLI version. 

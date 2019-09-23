@@ -9,10 +9,18 @@ jobs:
      - run: docker push levibostian/fastlane:latest
      - run: docker build -t levibostian/danger:latest danger
      - run: docker push levibostian/danger:latest
+     - run: docker build -t levibostian/aws-cli:latest aws-cli
+     - run: docker push levibostian/aws-cli:latest     
 
 workflows:
   version: 2
-  build-deploy-images:
+  commit:
+    jobs:
+      - build-deploy-images:
+          filters:
+            branches:
+              only: master
+  nightly:
     triggers:
       - schedule:
           cron: "0 0 * * *" # runs everyday at midnight UTC.
