@@ -9,8 +9,6 @@ jobs:
      - run: docker push levibostian/fastlane:latest
      - run: docker build -t levibostian/danger:latest danger
      - run: docker push levibostian/danger:latest
-     - run: docker build -t levibostian/aws-cli:latest aws-cli
-     - run: docker push levibostian/aws-cli:latest     
 
 workflows:
   version: 2
