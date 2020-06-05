@@ -5,21 +5,23 @@ env:
   global:
     - FOO=bar
     # -------------- secrets ---------------
-    # DOCKER_PASS - password to login to docker hub 
-    # DOCKER_USER - username of docker hub account 
+    # DOCKER_PASSWORD - password to login to docker hub 
+    # DOCKER_USERNAME - username of docker hub account 
 
 jobs:
   include:
-  - stage: push 
+  - stage: build 
     script:
       - ./build_all.sh
   - stage: deploy
     script:
+      # Login. https://docs.travis-ci.com/user/docker/#pushing-a-docker-image-to-a-registry
+      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       - ./build_all.sh
       - ./deploy_all.sh
 
 stages:
-  - name: commit
+  - name: build
     if: type IN (push) AND tag IS blank
   - name: deploy
-    if: tag IS present OR type IN (cron)
+    if: branch = master OR type IN (cron)
