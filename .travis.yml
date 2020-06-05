@@ -1,0 +1,25 @@
+services:
+  - docker
+
+env:
+  global:
+    - FOO=bar
+    # -------------- secrets ---------------
+    # DOCKER_PASS - password to login to docker hub 
+    # DOCKER_USER - username of docker hub account 
+
+jobs:
+  include:
+  - stage: push 
+    script:
+      - ./build_all.sh
+  - stage: deploy
+    script:
+      - ./build_all.sh
+      - ./deploy_all.sh
+
+stages:
+  - name: commit
+    if: type IN (push) AND tag IS blank
+  - name: deploy
+    if: tag IS present OR type IN (cron)
