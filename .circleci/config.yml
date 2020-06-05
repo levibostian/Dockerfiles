@@ -9,6 +9,8 @@ jobs:
      - run: docker push levibostian/fastlane:latest
      - run: docker build -t levibostian/danger:latest danger
      - run: docker push levibostian/danger:latest
+     - run: docker build -t levibostian/pgdump-s3:latest pgdump-s3
+     - run: docker push levibostian/pgdump-s3:latest
 
 workflows:
   version: 2
