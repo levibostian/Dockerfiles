@@ -1,22 +1,36 @@
 version: 2
 jobs:
- build-deploy-images:
-   machine: true
-   steps:
-     - checkout
-     - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
-     - run: docker build -t levibostian/fastlane:latest fastlane   
-     - run: docker push levibostian/fastlane:latest
-     - run: docker build -t levibostian/danger:latest danger
-     - run: docker push levibostian/danger:latest
-     - run: docker build -t levibostian/pgdump-s3:latest pgdump-s3
-     - run: docker push levibostian/pgdump-s3:latest
+  build-images:
+    machine: true
+    steps:
+      - checkout
+      - run: docker build -t levibostian/fastlane:latest fastlane   
+      - run: docker build -t levibostian/danger:latest danger
+      - run: docker build -t levibostian/pgdump-s3:latest pgdump-s3     
+  deploy-images:
+    machine: true
+    steps:
+      - checkout
+      - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
+      - run: docker push levibostian/fastlane:latest    
+      - run: docker push levibostian/danger:latest     
+      - run: docker push levibostian/pgdump-s3:latest     
 
 workflows:
   version: 2
-  commit:
+  push:
     jobs:
-      - build-deploy-images:
+      - build-images
+      
+  build-and-deploy:
+    jobs:
+      - build-images:
+          filters:
+            branches:
+              only: master
+      - deploy-images:
+          requires: 
+            - build-images
           filters:
             branches:
               only: master
@@ -29,4 +43,8 @@ workflows:
               only:
                 - master
     jobs:
-      - build-deploy-images
+      - build-images
+      - deploy-images:
+          requires: 
+            - build-images
+
