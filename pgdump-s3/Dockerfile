@@ -21,4 +21,4 @@ ENV S3_EXTRA_OPTIONS ''
 
 ADD run.sh run.sh
 
-CMD ["run", "run.sh"]
+CMD ["sh", "run.sh"]

@@ -6,7 +6,6 @@ set -o pipefail
 ##### pgdump
 
 # The official docs for pg_dump are readable. https://www.postgresql.org/docs/9.3/app-pgdump.html
-# 
 
 # example: 2020-06-04_19:02.dump
 DUMP_FILENAME="$(date +%Y-%m-%d_%H:%M).dump"
@@ -14,7 +13,9 @@ DUMP_LOCATION="/home/dumps/$DUMP_FILENAME"
 
 echo "Creating dump of ${POSTGRES_DATABASE} database from ${POSTGRES_HOST}..."
 
-export PGPASSWORD=$POSTGRES_PASSWORD
+echo "$POSTGRES_HOST:$POSTGRES_PORT:$POSTGRES_DATABASE:$POSTGRES_USER:$POSTGRES_PASSWORD" > "$HOME/.pgpass"
+chmod 0600 "$HOME/.pgpass"
+
 pg_dump -Fc -h $POSTGRES_HOST -p $POSTGRES_PORT -U $POSTGRES_USER $POSTGRES_DATABASE > "$DUMP_LOCATION"
 
 #### upload 
@@ -34,6 +35,6 @@ s3cmd --ssl "$ENDPOINT" "$S3_EXTRA_OPTIONS" --access_key="$S3_ACCESS_KEY" --secr
 
 echo "Upload complete. Setting $S3_FULL_FILE_PATH file to be private."
 
-s3cmd "$ENDPOINT" setacl s3://"$S3_FULL_FILE_PATH" --acl-private
+s3cmd "$ENDPOINT" "$S3_EXTRA_OPTIONS" --access_key="$S3_ACCESS_KEY" --secret_key="$S3_SECRET_KEY" setacl s3://"$S3_FULL_FILE_PATH" --acl-private
 
 echo "Success!"
